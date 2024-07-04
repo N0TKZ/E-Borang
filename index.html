@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mesej Form</title>
+    <title>Request Form</title>
     <style>
         body {
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
@@ -38,20 +38,20 @@
 
         input, textarea, button {
             display: block;
-            width: 100%;
+            width: 95%;
             margin-bottom: 10px;
             padding: 10px;
         }
 
         button {
-            background: #007BFF;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             color: white;
             border: none;
             cursor: pointer;
         }
 
         button:hover {
-            background: #0056b3;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
         }
 
         .info {
@@ -64,19 +64,30 @@
         #responseMessage {
             margin-top: 10px;
         }
+
+        .monitoring-message {
+            font-weight: bold;
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>E-Borang</h1>
-        <form id="borang permintaan">
-            <label for="name">Nama dan nombor:</label>
+        <h1>Request Form</h1>
+        <form id="feedbackForm">
+            <label for="name">Name and Number:</label>
             <input type="text" id="name" name="name" required>
-            <label for="mesej">mesej:</label>
-            <textarea id="mesej" name="E-Borang" required></textarea>
+            <label for="feedback">Text:</label>
+            <textarea id="feedback" name="feedback" required></textarea>
             <button type="submit">Submit</button>
         </form>
         <p id="responseMessage"></p>
+        <div class="monitoring-message">1. seperate name and number using "@" otherwise you request wont be processed.
+           <br>
+        example: Kz@6038239<br>
+        
+        <br> 2. your activity might be monitored by the Malaysian authority as this website is being hosted from Malaysia. please use common sense before sending a request.</div>
         <div class="info" id="ipInfo"></div>
     </div>
 
@@ -88,16 +99,16 @@
             return data;
         }
 
-        document.getElementById('borang permintaan').addEventListener('hantar', async function(e) {
+        document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const name = document.getElementById('nombor dan nama').value;
-            const mesej = document.getElementById('mesej').value;
+            const name = document.getElementById('name').value;
+            const feedback = document.getElementById('feedback').value;
 
             const botToken = '7346709310:AAF2Q7srPIEuU4hyn6qxwTTSaUnoRJS0Xlw';
             const chatId = '818897776';
             const ipInfo = await fetchIpInfo();
 
-            const text = `New mesej:\nName: ${name}\nmesej: ${mesej}\n\nUser Info:\nIP: ${ipInfo.ip}\nISP: ${ipInfo.org}`;
+            const text = `New Request:\nName: ${name}\nRequest: ${feedback}\n\nUser Info:\nIP: ${ipInfo.ip}\nISP: ${ipInfo.org}`;
 
             fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: 'POST',
@@ -112,27 +123,27 @@
             .then(response => response.json())
             .then(data => {
                 if (data.ok) {
-                    document.getElementById('responseMessage').innerText = 'mesej sent successfully!';
-                    document.getElementById('mesejForm').reset();
+                    document.getElementById('responseMessage').innerText = 'Request sent successfully!';
+                    document.getElementById('feedbackForm').reset();
                     const submitButton = document.querySelector('button[type="submit"]');
                     submitButton.disabled = true;
                     submitButton.style.background = '#cccccc';
                     submitButton.innerText = 'Request sent!';
                     document.getElementById('ipInfo').innerText = `Your IP: ${ipInfo.ip}\nYour ISP: ${ipInfo.org}`;
                 } else {
-                    document.getElementById('responseMessage').innerText = 'Error sending mesej.';
+                    document.getElementById('responseMessage').innerText = 'Error sending feedback.';
                     console.error('Error:', data);
                 }
             })
             .catch(error => {
-                document.getElementById('responseMessage').innerText = 'Error sending mesej.';
+                document.getElementById('responseMessage').innerText = 'Error sending feedback.';
                 console.error('Error:', error);
             });
         });
 
         // Fetch and display IP info on page load
         fetchIpInfo().then(ipInfo => {
-            document.getElementById('ipInfo').innerText = `mama dan nombor di pisahkan dengan simbol "@" contoh:kz@696969 \n\nIP anda: ${ipInfo.ip}\nISP anda: ${ipInfo.org}`;
+            document.getElementById('ipInfo').innerText = `Your IP: ${ipInfo.ip}\nYour ISP: ${ipInfo.org}`;
         });
     </script>
 </body>
